@@ -1,13 +1,16 @@
 //module
 const Gameboard = (() => {
-    let gameboard = ["", "", "", "", "", "", "", "", ""];
+    let gameboard =  ["", "", "", "", "", "", "", "",""];
   
     const reset = () => {
       gameboard = ["", "", "", "", "", "", "", "", ""];
+      render();
     };
   
     const update = (index, symbol) => {
       gameboard[index] = symbol;
+      render();
+
     };
   
     const checkWinner = () => {
@@ -46,17 +49,23 @@ const Gameboard = (() => {
   
     return { reset, update, checkWinner, getBoard, render };
   })();
-  
+
 
 //factory
-const Player = () => {
-
-    
-
+const Player = (name, symbol) => {
+return {name, symbol};
 }
 
-const displayController = () => {
+//create two players, 1 chooses X, the other O
+const player1 = Player("Player 1", "X");
+const player2 = Player("Player 2", "O");
 
 
-    
-}
+const displayController = (() => {
+   
+  
+
+  })();
+  
+
+
