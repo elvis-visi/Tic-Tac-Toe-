@@ -63,7 +63,31 @@ const player2 = Player("Player 2", "O");
 
 const displayController = (() => {
    
+    //current active player, player 1
+    let currentPlayer  = player1;
   
+    const cells = document.querySelectorAll(".cell");
+
+    //callback called after clicking on a cell
+    const handleClick = (e) => {
+      
+        const index = Array.from(cells).indexOf(e.target);
+        console.log("event and index: ",e, index)
+
+        //update the click cell only if it isn't occupied
+        if (Gameboard.getBoard()[index] === "") 
+        {
+            Gameboard.update(index, currentPlayer.symbol);
+
+            console.log("winner?",Gameboard.checkWinner())
+            currentPlayer = currentPlayer === player1 ? player2 : player1;
+        }
+    }
+
+    //add event listener to all cells
+    cells.forEach((cell) => {
+        cell.addEventListener("click",handleClick);
+    })
 
   })();
   
