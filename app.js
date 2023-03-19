@@ -67,6 +67,8 @@ const displayController = (() => {
     let currentPlayer  = player1;
   
     const cells = document.querySelectorAll(".cell");
+    const startButton = document.querySelector("#start");
+    const restartButton = document.querySelector("#restart");
 
     //callback called after clicking on a cell
     const handleClick = (e) => {
@@ -79,8 +81,18 @@ const displayController = (() => {
         {
             Gameboard.update(index, currentPlayer.symbol);
 
-            console.log("winner?",Gameboard.checkWinner())
-            currentPlayer = currentPlayer === player1 ? player2 : player1;
+            if(Gameboard.checkWinner() == true)
+            {
+                alert(currentPlayer.name + " won");
+                Gameboard.reset();
+                currentPlayer = player1;
+            }
+            else{
+                console.log("winner?",Gameboard.checkWinner())
+                currentPlayer = currentPlayer === player1 ? player2 : player1;
+            }
+
+        
         }
     }
 
@@ -88,6 +100,13 @@ const displayController = (() => {
     cells.forEach((cell) => {
         cell.addEventListener("click",handleClick);
     })
+
+    //add event listener to restart button
+    restartButton.addEventListener("click", () => {
+        Gameboard.reset();
+        currentPlayer = player1;
+        alert("Game restarted!");
+    });
 
   })();
   
