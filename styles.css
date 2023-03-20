@@ -26,3 +26,7 @@
     
   }
   
+  .active{
+    background-color: black !important;
+    color: #FFF !important;
+  }

@@ -35,6 +35,19 @@ const Gameboard = (() => {
       }
       return false;
     };
+    
+    const checkTie = () => {
+      let isBoardFilled = true;
+    
+      for (let i = 0; i < gameboard.length; i++) {
+        if (gameboard[i] == "") {
+          isBoardFilled = false;
+          break;
+        }
+      }
+    
+      return isBoardFilled;
+    };
   
     const getBoard = () => {
       return gameboard;
@@ -47,7 +60,7 @@ const Gameboard = (() => {
       }
     };
   
-    return { reset, update, checkWinner, getBoard, render };
+    return { reset, update, checkWinner, getBoard, render,checkTie };
   })();
 
 
@@ -60,11 +73,42 @@ return {name, symbol};
 const player1 = Player("Player 1", "X");
 const player2 = Player("Player 2", "O");
 
+function switchActive(off,on) {
+  off.classList.remove("active")
+  on.classList.add("active")
+}
+
+
+const xBtn = document.querySelector(".X");
+const oBtn = document.querySelector(".O");
+
+xBtn.addEventListener("click", () => {
+  player1.symbol = "X";
+  player2.symbol = "O";
+  switchActive(oBtn,xBtn);
+})
+
+oBtn.addEventListener("click", () => {
+  player1.symbol = "O";
+  player2.symbol = "X";
+  switchActive(xBtn,oBtn);
+})
+
+
+
+
+
 
 const displayController = (() => {
    
     //current active player, player 1
-    let currentPlayer  = player1;
+
+    let currentPlayer  = player1.symbol === "X" ? player1 : player2;
+
+    //curentPlayer depends on which symbol has player 1 selected
+
+   
+    console.log("currentPlayer: " , currentPlayer)
   
     const cells = document.querySelectorAll(".cell");
     const startButton = document.querySelector("#start");
@@ -81,11 +125,19 @@ const displayController = (() => {
         {
             Gameboard.update(index, currentPlayer.symbol);
 
+            if(Gameboard.checkTie())
+            {
+              alert("Draw");
+                Gameboard.reset();
+                //currentPlayer = player1;
+            }
+
+
             if(Gameboard.checkWinner() == true)
             {
                 alert(currentPlayer.name + " won");
                 Gameboard.reset();
-                currentPlayer = player1;
+                //currentPlayer = player1;
             }
             else{
                 console.log("winner?",Gameboard.checkWinner())
