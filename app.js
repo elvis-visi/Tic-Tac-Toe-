@@ -35,7 +35,7 @@ const Gameboard = (() => {
       }
       return false;
     };
-    
+
     const checkTie = () => {
       let isBoardFilled = true;
     
@@ -70,8 +70,8 @@ return {name, symbol};
 }
 
 //create two players, 1 chooses X, the other O
-const player1 = Player("Player 1", "X");
-const player2 = Player("Player 2", "O");
+const player1 = Player("Player 1", "");
+const player2 = Player("Computer", "");
 
 function switchActive(off,on) {
   off.classList.remove("active")
@@ -82,28 +82,74 @@ function switchActive(off,on) {
 const xBtn = document.querySelector(".X");
 const oBtn = document.querySelector(".O");
 
+let currentPlayer  = player1.symbol === "X" ? player1 : player2;
+
 xBtn.addEventListener("click", () => {
-  player1.symbol = "X";
-  player2.symbol = "O";
+  [player1.symbol, player2.symbol] = ["X", "O"];
   switchActive(oBtn,xBtn);
+
+ // Set currentPlayer to player1
+ currentPlayer = player1;
 })
 
 oBtn.addEventListener("click", () => {
-  player1.symbol = "O";
-  player2.symbol = "X";
+  [player1.symbol, player2.symbol] = ["O", "X"];
   switchActive(xBtn,oBtn);
+  // If it's now the computer's turn, make a move
+   // Set currentPlayer to player1
+  
+
+    makeComputerMove();
+    currentPlayer = player1;
+
 })
 
 
 
+function makeComputerMove() {
+  // Get the indices of all empty cells
+  let emptyCells = [];
+  let board = Gameboard.getBoard();
 
+  for (let i = 0; i < board.length; i++) {
+    if (board[i] === "") {
+      emptyCells.push(i);
+    }
+  }
+
+  // Choose a random index from the empty cells
+  let randomIndex = Math.floor(Math.random() * emptyCells.length);
+  let bestMove = emptyCells[randomIndex];
+
+  makeMove(bestMove);
+}
+
+function checkGameEnd() {
+  if (Gameboard.checkTie()) {
+    alert("Draw");
+    Gameboard.reset();
+  } else if (Gameboard.checkWinner()) {
+    alert(currentPlayer.name + " won");
+    Gameboard.reset();
+  } else {
+    currentPlayer = currentPlayer === player1 ? player2 : player1;
+  }
+}
+
+function makeMove(index) {
+  // Update the game board with the move
+  Gameboard.update(index, currentPlayer.symbol);
+
+  // Check if the game has ended
+  checkGameEnd();
+}
 
 
 const displayController = (() => {
    
     //current active player, player 1
-
-    let currentPlayer  = player1.symbol === "X" ? player1 : player2;
+    
+   
 
     //curentPlayer depends on which symbol has player 1 selected
 
@@ -115,38 +161,17 @@ const displayController = (() => {
     const restartButton = document.querySelector("#restart");
 
     //callback called after clicking on a cell
-    const handleClick = (e) => {
-      
-        const index = Array.from(cells).indexOf(e.target);
-        console.log("event and index: ",e, index)
-
-        //update the click cell only if it isn't occupied
-        if (Gameboard.getBoard()[index] === "") 
-        {
-            Gameboard.update(index, currentPlayer.symbol);
-
-            if(Gameboard.checkTie())
-            {
-              alert("Draw");
-                Gameboard.reset();
-                //currentPlayer = player1;
-            }
-
-
-            if(Gameboard.checkWinner() == true)
-            {
-                alert(currentPlayer.name + " won");
-                Gameboard.reset();
-                //currentPlayer = player1;
-            }
-            else{
-                console.log("winner?",Gameboard.checkWinner())
-                currentPlayer = currentPlayer === player1 ? player2 : player1;
-            }
-
-        
-        }
-    }
+    const handleClick = e => {
+      const index = Array.from(cells).indexOf(e.target);
+  
+      if (Gameboard.getBoard()[index] === "") {
+          makeMove(index);
+  
+          if (currentPlayer === player2) {
+              makeComputerMove();
+          }
+      }
+  }
 
     //add event listener to all cells
     cells.forEach((cell) => {
