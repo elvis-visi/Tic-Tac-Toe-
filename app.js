@@ -79,15 +79,40 @@ function switchActive(off,on) {
 }
 
 
+let currentPlayer = player1.symbol === "X" ? player1 : player2;
+
+const difficultySelect = document.querySelector("#difficulty");
+let difficulty = difficultySelect.value;
+
+difficultySelect.addEventListener("change", () => {
+  difficulty = difficultySelect.value;
+  Gameboard.reset();
+
+    // If player1 is 'O', make the computer move first when changing difficulty
+  if (player1.symbol === 'O') {
+    player2.symbol = 'X'
+    currentPlayer = player2;
+    makeComputerMove(difficulty);
+  }
+ else {
+    // If player1 is 'X', set currentPlayer to player1 when changing difficulty
+    currentPlayer = player1;
+  }
+
+  console.log("difficulty: ",difficulty)
+});
+
+
+
 const xBtn = document.querySelector(".X");
 const oBtn = document.querySelector(".O");
 
-let currentPlayer  = player1.symbol === "X" ? player1 : player2;
+
 
 xBtn.addEventListener("click", () => {
   [player1.symbol, player2.symbol] = ["X", "O"];
   switchActive(oBtn,xBtn);
-
+ Gameboard.reset();
  // Set currentPlayer to player1
  currentPlayer = player1;
 })
@@ -97,44 +122,97 @@ oBtn.addEventListener("click", () => {
   switchActive(xBtn,oBtn);
   // If it's now the computer's turn, make a move
    // Set currentPlayer to player1
+   currentPlayer = player2;
   
-
-    makeComputerMove();
-    currentPlayer = player1;
+   Gameboard.reset();
+  makeComputerMove(difficulty);
+   
 
 })
 
 
-
-function makeComputerMove() {
-  // Get the indices of all empty cells
-  let emptyCells = [];
+function makeComputerMove(difficulty) {
+  
+  console.log("passed difficulty :" + difficulty)
+  
   let board = Gameboard.getBoard();
+  let bestMove;
 
-  for (let i = 0; i < board.length; i++) {
-    if (board[i] === "") {
-      emptyCells.push(i);
+  if (difficulty === "hard" || difficulty === "medium") {
+    // Check for winning moves
+    for (let i = 0; i < board.length; i++) {
+      if (board[i] === "") {
+        board[i] = player2.symbol;
+        if (Gameboard.checkWinner()) {
+          bestMove = i;
+          break;
+        }
+        board[i] = "";
+      }
+    }
+
+    // Check for blocking moves
+    if (!bestMove && difficulty === "hard") {
+      for (let i = 0; i < board.length; i++) {
+        if (board[i] === "") {
+          board[i] = player1.symbol;
+          if (Gameboard.checkWinner()) {
+            bestMove = i;
+            break;
+          }
+          board[i] = "";
+        }
+      }
     }
   }
 
-  // Choose a random index from the empty cells
-  let randomIndex = Math.floor(Math.random() * emptyCells.length);
-  let bestMove = emptyCells[randomIndex];
+  // Choose random move if no other options
+  if (!bestMove) {
+    let emptyCells = [];
+    for (let i = 0; i < board.length; i++) {
+      if (board[i] === "") {
+        emptyCells.push(i);
+      }
+    }
 
-  makeMove(bestMove);
+    let randomIndex = Math.floor(Math.random() * emptyCells.length);
+    bestMove = emptyCells[randomIndex];
+}
+
+// Update the game board with the move
+Gameboard.update(bestMove, currentPlayer.symbol);
+
+// Check if the game has ended
+checkGameEnd();
 }
 
 function checkGameEnd() {
   if (Gameboard.checkTie()) {
     alert("Draw");
+    // Reset the game and make the computer move first if player1 is 'O'
     Gameboard.reset();
+    if (player1.symbol === 'O') {
+      currentPlayer = player2; // no more double move
+      makeComputerMove(difficulty);
+    }else {
+      currentPlayer = player1;
+    }
   } else if (Gameboard.checkWinner()) {
     alert(currentPlayer.name + " won");
+    // Reset the game and make the computer move first if player1 is 'O'
     Gameboard.reset();
+    if (player1.symbol === 'O') {
+      currentPlayer = player2;
+      makeComputerMove(difficulty);
+    }
+    else {
+      currentPlayer = player1;
+    }
   } else {
     currentPlayer = currentPlayer === player1 ? player2 : player1;
   }
 }
+
 
 function makeMove(index) {
   // Update the game board with the move
@@ -168,7 +246,7 @@ const displayController = (() => {
           makeMove(index);
   
           if (currentPlayer === player2) {
-              makeComputerMove();
+              makeComputerMove(difficulty);
           }
       }
   }
