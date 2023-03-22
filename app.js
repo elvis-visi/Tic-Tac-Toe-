@@ -59,8 +59,40 @@ const Gameboard = (() => {
         cells[i].textContent = gameboard[i];
       }
     };
+
+    function makeMove(index) {
+      // Update the game board with the move
+      Gameboard.update(index, currentPlayer.symbol);
+    
+      // Check if the game has ended
+      checkGameEnd();
+    }
+
+    function checkGameEnd() {
+      if (Gameboard.checkTie()) {
+        alert("Draw");
+        Gameboard.reset();
+        if (player1.symbol === 'O') {
+          currentPlayer = player2;
+          displayController.makeComputerMove(difficulty);
+        } else {
+          currentPlayer = player1;
+        }
+      } else if (Gameboard.checkWinner()) {
+        alert(currentPlayer.name + " won");
+        Gameboard.reset();
+        if (player1.symbol === 'O') {
+          currentPlayer = player2;
+          displayController.makeComputerMove(difficulty);
+        } else {
+          currentPlayer = player1;
+        }
+      } else {
+        currentPlayer = currentPlayer === player1 ? player2 : player1;
+      }
+    }
   
-    return { reset, update, checkWinner, getBoard, render,checkTie };
+    return { reset, update, checkWinner, getBoard, render,checkTie, makeMove, checkGameEnd };
   })();
 
 
@@ -78,6 +110,7 @@ function switchActive(off,on) {
   on.classList.add("active")
 }
 
+//select game difficulty
 
 let currentPlayer = player1.symbol === "X" ? player1 : player2;
 
@@ -92,7 +125,7 @@ difficultySelect.addEventListener("change", () => {
   if (player1.symbol === 'O') {
     player2.symbol = 'X'
     currentPlayer = player2;
-    makeComputerMove(difficulty);
+    displayController.makeComputerMove(difficulty);
   }
  else {
     // If player1 is 'X', set currentPlayer to player1 when changing difficulty
@@ -125,12 +158,23 @@ oBtn.addEventListener("click", () => {
    currentPlayer = player2;
   
    Gameboard.reset();
-  makeComputerMove(difficulty);
+  displayController.makeComputerMove(difficulty);
    
-
+ 
 })
 
 
+
+
+
+
+const displayController = (() => {
+   
+ 
+  1
+
+   
+  //make computer move based on certain rules
 function makeComputerMove(difficulty) {
   
   console.log("passed difficulty :" + difficulty)
@@ -183,51 +227,8 @@ function makeComputerMove(difficulty) {
 Gameboard.update(bestMove, currentPlayer.symbol);
 
 // Check if the game has ended
-checkGameEnd();
+Gameboard.checkGameEnd();
 }
-
-function checkGameEnd() {
-  if (Gameboard.checkTie()) {
-    alert("Draw");
-    // Reset the game and make the computer move first if player1 is 'O'
-    Gameboard.reset();
-    if (player1.symbol === 'O') {
-      currentPlayer = player2; // no more double move
-      makeComputerMove(difficulty);
-    }else {
-      currentPlayer = player1;
-    }
-  } else if (Gameboard.checkWinner()) {
-    alert(currentPlayer.name + " won");
-    // Reset the game and make the computer move first if player1 is 'O'
-    Gameboard.reset();
-    if (player1.symbol === 'O') {
-      currentPlayer = player2;
-      makeComputerMove(difficulty);
-    }
-    else {
-      currentPlayer = player1;
-    }
-  } else {
-    currentPlayer = currentPlayer === player1 ? player2 : player1;
-  }
-}
-
-
-function makeMove(index) {
-  // Update the game board with the move
-  Gameboard.update(index, currentPlayer.symbol);
-
-  // Check if the game has ended
-  checkGameEnd();
-}
-
-
-const displayController = (() => {
-   
-    //current active player, player 1
-    
-   
 
     //curentPlayer depends on which symbol has player 1 selected
 
@@ -243,7 +244,7 @@ const displayController = (() => {
       const index = Array.from(cells).indexOf(e.target);
   
       if (Gameboard.getBoard()[index] === "") {
-          makeMove(index);
+        Gameboard.makeMove(index);
   
           if (currentPlayer === player2) {
               makeComputerMove(difficulty);
@@ -262,6 +263,8 @@ const displayController = (() => {
         currentPlayer = player1;
         alert("Game restarted!");
     });
+
+    return { handleClick, makeComputerMove };
 
   })();
   
