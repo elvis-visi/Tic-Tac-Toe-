@@ -8,6 +8,7 @@ const Gameboard = (() => {
     };
   
     const update = (index, symbol) => {
+
       gameboard[index] = symbol;
       render();
 
@@ -77,7 +78,11 @@ const Gameboard = (() => {
       if (Gameboard.checkWinner()) {
         console.log("Winner found: ", currentPlayer.name, gameboard);
         setTimeout(() => {
-        alert(currentPlayer.name + " won");
+        Swal.fire({
+          title: `${currentPlayer.name} won!`,
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
         Gameboard.reset(); //board is empty
         //after resetting the game, new game starts
         if (player1.symbol === 'O') {
@@ -90,7 +95,11 @@ const Gameboard = (() => {
       } else if (Gameboard.checkTie()) {
         console.log("Draw detected: ", gameboard); 
         setTimeout(() => {
-        alert("Draw");
+          Swal.fire({
+            title: 'It\'s a draw!',
+            icon: 'info',
+            confirmButtonText: 'OK'
+          });
         Gameboard.reset();
         if (player1.symbol === 'O') {
           currentPlayer = player2;
@@ -114,7 +123,7 @@ return {name, symbol};
 }
 
 //create two players, 1 chooses X, the other O
-const player1 = Player("Player 1", "");
+const player1 = Player("You", "");
 const player2 = Player("Computer", "");
 
 function switchActive(off,on) {
