@@ -62,14 +62,34 @@ const Gameboard = (() => {
 
     function makeMove(index) {
       // Update the game board with the move
+
+      console.log("curentplayer and symbol",currentPlayer.name,currentPlayer.symbol)
       Gameboard.update(index, currentPlayer.symbol);
     
       // Check if the game has ended
       checkGameEnd();
+
+      
+
     }
 
     function checkGameEnd() {
-      if (Gameboard.checkTie()) {
+      if (Gameboard.checkWinner()) {
+        console.log("Winner found: ", currentPlayer.name, gameboard);
+        setTimeout(() => {
+        alert(currentPlayer.name + " won");
+        Gameboard.reset(); //board is empty
+        //after resetting the game, new game starts
+        if (player1.symbol === 'O') {
+          currentPlayer = player2;
+          displayController.makeComputerMove(difficulty);
+        } else {
+          currentPlayer = player1;
+        }
+        }, 400);
+      } else if (Gameboard.checkTie()) {
+        console.log("Draw detected: ", gameboard); 
+        setTimeout(() => {
         alert("Draw");
         Gameboard.reset();
         if (player1.symbol === 'O') {
@@ -78,15 +98,7 @@ const Gameboard = (() => {
         } else {
           currentPlayer = player1;
         }
-      } else if (Gameboard.checkWinner()) {
-        alert(currentPlayer.name + " won");
-        Gameboard.reset();
-        if (player1.symbol === 'O') {
-          currentPlayer = player2;
-          displayController.makeComputerMove(difficulty);
-        } else {
-          currentPlayer = player1;
-        }
+      },400)
       } else {
         currentPlayer = currentPlayer === player1 ? player2 : player1;
       }
@@ -174,16 +186,16 @@ const displayController = (() => {
   1
 
    
-  //make computer move based on certain rules
 function makeComputerMove(difficulty) {
-  
-  console.log("passed difficulty :" + difficulty)
+  console.log("AI and symbol",currentPlayer.name,currentPlayer.symbol);
   
   let board = Gameboard.getBoard();
   let bestMove;
+  let blockingMove;
 
-  if (difficulty === "hard" || difficulty === "medium") {
-    // Check for winning moves
+  
+  // Look for winning moves on medium and hard modes
+  if (difficulty === "medium" || difficulty === "hard") {
     for (let i = 0; i < board.length; i++) {
       if (board[i] === "") {
         board[i] = player2.symbol;
@@ -194,24 +206,32 @@ function makeComputerMove(difficulty) {
         board[i] = "";
       }
     }
+  }
 
-    // Check for blocking moves
-    if (!bestMove && difficulty === "hard") {
-      for (let i = 0; i < board.length; i++) {
-        if (board[i] === "") {
-          board[i] = player1.symbol;
-          if (Gameboard.checkWinner()) {
-            bestMove = i;
-            break;
-          }
-          board[i] = "";
+  // Look for blocking moves on hard mode, only if no winning move is found
+  //thus prioritizing winning over blocking moves, getting rid of double moves.
+  if (difficulty === "hard" && !bestMove) {
+    for (let i = 0; i < board.length; i++) {
+      if (board[i] === "") {
+        board[i] = player1.symbol;
+        if (Gameboard.checkWinner()) {
+          blockingMove = i;
         }
+        board[i] = "";
       }
     }
   }
 
-  // Choose random move if no other options
-  if (!bestMove) {
+
+  // Choose a winning move if available
+  if (bestMove !== undefined) {
+    console.log("Choosing winning move");
+  } else if (blockingMove !== undefined) {
+    bestMove = blockingMove;
+    console.log("Choosing blocking move");
+  }
+  // Choose a random move if no winning or blocking moves found
+  else {
     let emptyCells = [];
     for (let i = 0; i < board.length; i++) {
       if (board[i] === "") {
@@ -221,13 +241,29 @@ function makeComputerMove(difficulty) {
 
     let randomIndex = Math.floor(Math.random() * emptyCells.length);
     bestMove = emptyCells[randomIndex];
-}
+    console.log("Choosing random move");
+  }
 
-// Update the game board with the move
-Gameboard.update(bestMove, currentPlayer.symbol);
+  // Disable the game board while the computer is making a move
+  const cells = document.querySelectorAll(".cell");
+  cells.forEach((cell) => {
+    cell.removeEventListener("click", displayController.handleClick);
+  });
 
-// Check if the game has ended
-Gameboard.checkGameEnd();
+  // Update the game board with the move
+  setTimeout(() => {
+    Gameboard.update(bestMove, currentPlayer.symbol);
+
+    // Check if the game has ended
+    Gameboard.checkGameEnd();
+
+    // Re-enable the game board after a delay
+    setTimeout(() => {
+      cells.forEach((cell) => {
+        cell.addEventListener("click", displayController.handleClick);
+      });
+    }, 200);
+  }, 200);
 }
 
     //curentPlayer depends on which symbol has player 1 selected
@@ -247,7 +283,9 @@ Gameboard.checkGameEnd();
         Gameboard.makeMove(index);
   
           if (currentPlayer === player2) {
+            setTimeout(() => {
               makeComputerMove(difficulty);
+            }, 400);
           }
       }
   }
