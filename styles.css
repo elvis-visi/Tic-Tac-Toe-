@@ -1,18 +1,58 @@
+body {
+  background-color: #F7E1D7; /* Pastel pink background */
+}
+
 .main{
     display:flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-   
+    color: #40514E; /* Dark green text */
+  
+}
+
+header{
+  font-size: 28px;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 450px;
+  margin-top: 40px;
 }
 
 #board {
+  background-color: #E6F7E1; /* Pastel green background */
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-gap: 0;
     font-size: 0; /* make whitespace characters invisible */
-    width:450px;
-    padding:20px;
+    width: 450px;
+    border: 2px solid #40514E; /* Darker green border */
+    margin-top: 20px;;
+    margin-bottom: 20px;
+
+  }
+
+  .options button {
+    font-size: 14px;
+    padding: 5px 35px;
+    margin-left: 5px;
+    cursor: pointer;
+     color: #40514E; /* Darker green text */
+    border: 1px solid #40514E; /* Darker green border */
+  }
+
+  .options button:hover {
+    background-color: #F4C1A7; /* Slightly darker pastel orange on hover */
+  }
+
+  #difficulty {
+    font-size: 16px;
+    padding: 5px 10px;
+       border: 1px solid #40514E; /* Darker green border */
   }
   
   .cell {
@@ -23,10 +63,25 @@
     vertical-align: middle;
     border: 1px solid black;
     cursor: pointer;
+    border: 1px solid #40514E; /* Darker green border */
     
   }
-  
+
   .active{
-    background-color: black !important;
+    background-color: #40514E !important;
     color: #FFF !important;
   }
+
+  #restart {
+    font-size: 16px;
+    padding: 10px 15px;
+    background-color: #F4E1D2; /* Pastel orange background */
+    color: #40514E; /* Darker green text */
+    border: 1px solid #40514E; /* Darker green border */
+    cursor: pointer;
+  }
+
+  
+#restart:hover {
+  background-color: #F4C1A7; /* Slightly darker pastel orange on hover */
+}
