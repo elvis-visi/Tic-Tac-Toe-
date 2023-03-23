@@ -30,7 +30,6 @@ header{
     grid-gap: 0;
     font-size: 0; /* make whitespace characters invisible */
     width: 450px;
-    height: 450px;
     border: 2px solid #40514E; /* Darker green border */
     margin-top: 20px;;
     margin-bottom: 20px;
@@ -57,11 +56,12 @@ header{
   }
   
   .cell {
-    
-    font-size: 40px;
+
+    width: 150px;
+    height: 120px;
+    font-size: 75px;
     text-align: center;
     vertical-align: middle;
-    border: 1px solid black;
     cursor: pointer;
     border: 1px solid #40514E; /* Darker green border */
     
@@ -123,7 +123,6 @@ footer a {
   
   #board {
     width: 300px;
-    height: 300px;
     grid-template-columns: repeat(3, 1fr);
   }
 
@@ -152,6 +151,12 @@ footer a {
 
   a {
     font-size:16px;
+  }
+
+  .cell{
+    width: 100px;
+    height: 80px;
+    font-size: 50px;
   }
 }
 
