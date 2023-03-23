@@ -29,7 +29,6 @@ header{
     grid-template-columns: 1fr 1fr 1fr;
     grid-gap: 0;
     font-size: 0; /* make whitespace characters invisible */
-    width: 450px;
     border: 2px solid #40514E; /* Darker green border */
     margin-top: 20px;;
     margin-bottom: 20px;
@@ -121,10 +120,6 @@ footer a {
 
 @media (max-width: 768px) {
   
-  #board {
-    width: 300px;
-    grid-template-columns: repeat(3, 1fr);
-  }
 
   header {
     font-size: 24px;
