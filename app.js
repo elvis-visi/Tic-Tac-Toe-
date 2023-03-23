@@ -294,7 +294,7 @@ function makeComputerMove(difficulty) {
           if (currentPlayer === player2) {
             setTimeout(() => {
               makeComputerMove(difficulty);
-            }, 400);
+            }, 150);
           }
       }
   }
@@ -308,7 +308,11 @@ function makeComputerMove(difficulty) {
     restartButton.addEventListener("click", () => {
         Gameboard.reset();
         currentPlayer = player1;
-        alert("Game restarted!");
+        Swal.fire({
+          title: `New game!`,
+          icon: 'info',
+          confirmButtonText: 'OK'
+        });
     });
 
     return { handleClick, makeComputerMove };
