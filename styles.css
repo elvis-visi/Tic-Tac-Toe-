@@ -30,6 +30,7 @@ header{
     grid-gap: 0;
     font-size: 0; /* make whitespace characters invisible */
     width: 450px;
+    height: 450px;
     border: 2px solid #40514E; /* Darker green border */
     margin-top: 20px;;
     margin-bottom: 20px;
@@ -56,8 +57,7 @@ header{
   }
   
   .cell {
-    width: 150px;
-    height: 100px;
+    
     font-size: 40px;
     text-align: center;
     vertical-align: middle;
@@ -85,3 +85,73 @@ header{
 #restart:hover {
   background-color: #F4C1A7; /* Slightly darker pastel orange on hover */
 }
+
+.x-symbol {
+  color: #D5433C; /* Red color for X symbol */
+  font-weight: bold;
+}
+
+.o-symbol {
+  color: #3C82D5; /* Blue color for O symbol */
+  font-weight: bold;
+}
+
+footer{
+  text-align: center;
+  padding: 10px;
+  /*element is positioned relative to the browser window, rather than to its containing element*/
+  position: fixed;
+  /*sets the distance between the bottom edge of an element and the bottom edge of
+   its containing element.*/
+  bottom: 0;
+  width: 100%;   /*fill the entire row */
+}
+
+a {
+  font-size:18px;
+}
+
+/* remove the default underline applied to links*/
+footer a {
+  text-decoration: none;
+
+}
+
+/* responsive text within results container */
+
+@media (max-width: 768px) {
+  
+  #board {
+    width: 300px;
+    height: 300px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  header {
+    font-size: 24px;
+  }
+
+  .options{
+    width: 300px;
+  }
+
+  .options button {
+    font-size: 12px;
+    padding: 5px 25px;
+  }
+
+  #difficulty {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  #restart {
+    font-size: 12px;
+    padding: 10px 15px;
+  }
+
+  a {
+    font-size:16px;
+  }
+}
+
